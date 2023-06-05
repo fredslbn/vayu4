@@ -48,7 +48,7 @@ FINAL_ZIP_ALIAS=Karenulvin-${TANGGAL}.zip
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=cosmic
+COMPILER=cosmic-clang
 
 ##----------------------------------------------------------##
 # Specify Linker
