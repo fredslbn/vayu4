@@ -780,11 +780,6 @@ KBUILD_CFLAGS += $(call cc-option,-fno-delete-null-pointer-checks,)
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 
 ifeq ($(ld-name),lld)
- ifdef CONFIG_LTO_CLANG
-   LDFLAGS += --lto-O2
- else
-   LDFLAGS += -O2
- endif
    LDFLAGS += -z norelro
 endif 
 
