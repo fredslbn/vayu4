@@ -155,6 +155,10 @@ function exports() {
         
 	    export PROCS=$(nproc --all)
 	    export DISTRO=$(source /etc/os-release && echo "${NAME}")
+	    
+	    # Server caching for speed up compile
+	    export LC_ALL=C && export USE_CCACHE=1
+	    ccache -M 100G
 	
 	}
         
