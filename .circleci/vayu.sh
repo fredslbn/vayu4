@@ -24,8 +24,8 @@ DISABLE_LTO=0
 THIN_LTO=0
 
 # Files
-IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
-DTBO=$(pwd)/out/arch/arm64/boot/dtbo.img
+IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz
+#DTBO=$(pwd)/out/arch/arm64/boot/dtbo.img
 #DTB=$(pwd)/out/arch/arm64/boot/dts/qcom
 
 # Verbose Build
@@ -43,12 +43,12 @@ TANGGAL=$(date +"%F%S")
 # Specify Final Zip Name
 ZIPNAME=SUPER.KERNEL
 FINAL_ZIP=${ZIPNAME}-${DEVICE}-${TANGGAL}.zip
-FINAL_ZIP_ALIAS=Karenulvin-${TANGGAL}.zip
+FINAL_ZIP_ALIAS=Karenulvay-${TANGGAL}.zip
 
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=cosmic-clang
+COMPILER=azure
 
 ##----------------------------------------------------------##
 # Specify Linker
@@ -199,16 +199,16 @@ START=$(date +"%s")
 	       CC=clang \
 	       CROSS_COMPILE=aarch64-linux-gnu- \
 	       CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
-	       LLVM=1 \
-	       LLVM_IAS=1 \
 	       LD=${LINKER} \
-	       AR=llvm-ar \
-	       NM=llvm-nm \
-	       OBJCOPY=llvm-objcopy \
-	       OBJDUMP=llvm-objdump \
-	       STRIP=llvm-strip \
-	       READELF=llvm-readelf \
-	       OBJSIZE=llvm-size \
+	       #LLVM=1 \
+	       #LLVM_IAS=1 \
+	       #AR=llvm-ar \
+	       #NM=llvm-nm \
+	       #OBJCOPY=llvm-objcopy \
+	       #OBJDUMP=llvm-objdump \
+	       #STRIP=llvm-strip \
+	       #READELF=llvm-readelf \
+	       #OBJSIZE=llvm-size \
 	       V=$VERBOSE 2>&1 | tee error.log
 	elif [ -d ${KERNEL_DIR}/cosmic ];
 	   then
@@ -284,16 +284,20 @@ START=$(date +"%s")
 function zipping() {
 	# Copy Files To AnyKernel3 Zip
 	cp $IMAGE AnyKernel3
-	cp $DTBO AnyKernel3
+	#cp $DTBO AnyKernel3
+	#find $DTB -name "*.dtb" -exec cat {} + > AnyKernel3/dtb
 	
 	# Zipping and Push Kernel
 	cd AnyKernel3 || exit 1
         zip -r9 ${FINAL_ZIP_ALIAS} *
         MD5CHECK=$(md5sum "$FINAL_ZIP_ALIAS" | cut -d' ' -f1)
         echo "Zip: $FINAL_ZIP_ALIAS"
-        curl -T $FINAL_ZIP_ALIAS temp.sh; echo
+        #curl -T $FINAL_ZIP_ALIAS temp.sh; echo
+        #curl -T $FINAL_ZIP_ALIAS https://oshi.at; echo
+        curl --upload-file $FINAL_ZIP_ALIAS https://free.keep.sh; echo
     cd ..
 }
+
     
 ##----------------------------------------------------------##
 
