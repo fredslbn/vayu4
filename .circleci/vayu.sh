@@ -10,11 +10,11 @@ KERNEL_DIR="$(pwd)"
 
 ##----------------------------------------------------------##
 # Device Name and Model
-MODEL=POCO X3 PRO
+MODEL=POCO-X3
 DEVICE=vayu
 
 # Kernel Version Code
-VERSION=
+#VERSION=
 
 # Kernel Defconfig
 DEFCONFIG=${DEVICE}_defconfig
@@ -151,7 +151,7 @@ function exports() {
         
         # KBUILD HOST and USER
         export KBUILD_BUILD_HOST=Pancali
-        export KBUILD_BUILD_USER="unknown"
+        export KBUILD_BUILD_USER="wtc2"
         
 	    export PROCS=$(nproc --all)
 	    export DISTRO=$(source /etc/os-release && echo "${NAME}")
