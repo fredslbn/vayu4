@@ -20,8 +20,8 @@ DEVICE=vayu
 DEFCONFIG=${DEVICE}_defconfig
 
 # Select LTO variant ( Full LTO by default )
-DISABLE_LTO=0
-THIN_LTO=1
+DISABLE_LTO=1
+THIN_LTO=0
 
 # Files
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz
