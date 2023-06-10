@@ -48,7 +48,7 @@ FINAL_ZIP_ALIAS=Karenulvay-${TANGGAL}.zip
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=cosmic-clang
+COMPILER=gf
 
 ##----------------------------------------------------------##
 # Specify Linker
@@ -73,6 +73,11 @@ function cloneTC() {
     elif [ $COMPILER = "trb" ];
     then
     git clone --depth=1 https://gitlab.com/varunhardgamer/trb_clang.git clang
+    PATH="${KERNEL_DIR}/clang/bin:$PATH"
+    
+    elif [ $COMPILER = "gf" ];
+    then
+    git clone --depth=1 https://github.com/greenforce-project/clang-llvm.git -b main clang
     PATH="${KERNEL_DIR}/clang/bin:$PATH"
     
     elif [ $COMPILER = "cosmic" ];
@@ -128,15 +133,20 @@ function exports() {
            then
                export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
                export LD_LIBRARY_PATH="${KERNEL_DIR}/clang/lib:$LD_LIBRARY_PATH"
+               
         elif [ -d ${KERNEL_DIR}/gcc64 ];
            then
                export KBUILD_COMPILER_STRING=$("$KERNEL_DIR/gcc64"/bin/aarch64-elf-gcc --version | head -n 1)       
         elif [ -d ${KERNEL_DIR}/cosmic ];
            then
-               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/cosmic/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')        
+               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/cosmic/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+               export LD_LIBRARY_PATH="${KERNEL_DIR}/cosmic/lib:$LD_LIBRARY_PATH"
+                       
         elif [ -d ${KERNEL_DIR}/cosmic-clang ];
            then
                export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/cosmic-clang/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//' -e 's/^.*clang/clang/')
+               export LD_LIBRARY_PATH="${KERNEL_DIR}/cosmic-clang/lib:$LD_LIBRARY_PATH"
+               
         elif [ -d ${KERNEL_DIR}/aosp-clang ];
             then
                export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/aosp-clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
@@ -206,11 +216,11 @@ START=$(date +"%s")
 	       LD=${LINKER} \
 	       #LLVM=1 \
 	       #LLVM_IAS=1 \
-	       #AR=llvm-ar \
-	       #NM=llvm-nm \
-	       #OBJCOPY=llvm-objcopy \
-	       #OBJDUMP=llvm-objdump \
-	       #STRIP=llvm-strip \
+	       AR=llvm-ar \
+	       NM=llvm-nm \
+	       OBJCOPY=llvm-objcopy \
+	       OBJDUMP=llvm-objdump \
+	       STRIP=llvm-strip \
 	       #READELF=llvm-readelf \
 	       #OBJSIZE=llvm-size \
 	       V=$VERBOSE 2>&1 | tee error.log
