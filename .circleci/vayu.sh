@@ -48,7 +48,7 @@ FINAL_ZIP_ALIAS=Karenulvay-${TANGGAL}.zip
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=cosmic-clang
+COMPILER=neutron
 
 ##----------------------------------------------------------##
 # Specify Linker
@@ -79,6 +79,19 @@ function cloneTC() {
     then
     git clone --depth=1 https://github.com/greenforce-project/clang-llvm.git -b main clang
     PATH="${KERNEL_DIR}/clang/bin:$PATH"
+    
+    elif [ $COMPILER = "neutron" ];
+    then
+    #git clone --depth=1 https://github.com/greenforce-project/clang-llvm.git -b main clang
+    #wget https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/download/11032023/neutron-clang-11032023.tar.zst && mkdir clang && tar --use-compress-program=unzstd -xvf neutron-clang-11032023.tar.zst -C neutron/
+    mkdir neutron
+curl -s https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/tag/11032023 \
+| grep "browser_download_url.*tar.zst" \
+| cut -d : -f 2,3 \
+| tr -d \" \
+| wget --output-document=neutron.tar.zst -qi -
+tar --use-compress-program=unzstd -xvf neutron.tar.zst -C neutron/ || exit 1
+    PATH="${KERNEL_DIR}/neutron/bin:$PATH"
     
     elif [ $COMPILER = "cosmic" ];
     then
@@ -147,6 +160,11 @@ function exports() {
                export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/cosmic-clang/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//' -e 's/^.*clang/clang/')
                export LD_LIBRARY_PATH="${KERNEL_DIR}/cosmic-clang/lib:$LD_LIBRARY_PATH"
                
+        elif [ -d ${KERNEL_DIR}/neutron ];
+           then
+               export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/neutron/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+               export LD_LIBRARY_PATH="${KERNEL_DIR}/neutron/lib:$LD_LIBRARY_PATH"
+        
         elif [ -d ${KERNEL_DIR}/aosp-clang ];
             then
                export KBUILD_COMPILER_STRING=$(${KERNEL_DIR}/aosp-clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
@@ -167,8 +185,8 @@ function exports() {
 	    export DISTRO=$(source /etc/os-release && echo "${NAME}")
 	    
 	    # Server caching for speed up compile
-	    export LC_ALL=C && export USE_CCACHE=1
-	    ccache -M 100G
+	    #export LC_ALL=C && export USE_CCACHE=1
+	    #ccache -M 100G
 	
 	}
         
@@ -216,11 +234,11 @@ START=$(date +"%s")
 	       LD=${LINKER} \
 	       #LLVM=1 \
 	       #LLVM_IAS=1 \
-	       AR=llvm-ar \
-	       NM=llvm-nm \
-	       OBJCOPY=llvm-objcopy \
-	       OBJDUMP=llvm-objdump \
-	       STRIP=llvm-strip \
+	       #AR=llvm-ar \
+	       #NM=llvm-nm \
+	       #OBJCOPY=llvm-objcopy \
+	       #OBJDUMP=llvm-objdump \
+	       #STRIP=llvm-strip \
 	       #READELF=llvm-readelf \
 	       #OBJSIZE=llvm-size \
 	       V=$VERBOSE 2>&1 | tee error.log
@@ -256,6 +274,24 @@ START=$(date +"%s")
 	       OBJDUMP=llvm-objdump \
 	       STRIP=llvm-strip \
 	       V=$VERBOSE 2>&1 | tee error.log
+	
+	elif [ -d ${KERNEL_DIR}/neutron ];
+	   then
+	       make -kj$(nproc --all) O=out \
+	       ARCH=arm64 \
+	       CC=clang \
+	       CROSS_COMPILE=aarch64-linux-gnu- \
+	       CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+	       LD=${LINKER} \
+	       #LLVM=1 \
+	       #LLVM_IAS=1 \
+	       #AR=llvm-ar \
+	       #NM=llvm-nm \
+	       #OBJCOPY=llvm-objcopy \
+	       #OBJDUMP=llvm-objdump \
+	       #STRIP=llvm-strip \
+	       V=$VERBOSE 2>&1 | tee error.log
+	
 	elif [ -d ${KERNEL_DIR}/gcc64 ];
 	   then
 	       make -kj$(nproc --all) O=out \
