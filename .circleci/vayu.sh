@@ -64,11 +64,6 @@ function cloneTC() {
 	then
 	git clone --depth=1 https://gitlab.com/ElectroPerf/atom-x-clang.git clang
 	PATH="${KERNEL_DIR}/clang/bin:$PATH"
-
-    elif [ $COMPILER = "neutron" ];
-    then
-    git clone --depth=1 https://gitlab.com/dakkshesh07/neutron-clang.git clang
-    PATH="${KERNEL_DIR}/clang/bin:$PATH"
     
     elif [ $COMPILER = "trb" ];
     then
