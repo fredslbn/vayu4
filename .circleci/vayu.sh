@@ -48,7 +48,7 @@ FINAL_ZIP_ALIAS=Karenulvay-${TANGGAL}.zip
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=neutron
+COMPILER=azure
 
 ##----------------------------------------------------------##
 # Specify Linker
