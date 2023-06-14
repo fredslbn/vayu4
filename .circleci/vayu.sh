@@ -48,7 +48,7 @@ FINAL_ZIP_ALIAS=Karenulvay-${TANGGAL}.zip
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=azure
+COMPILER=atomx
 
 ##----------------------------------------------------------##
 # Specify Linker
@@ -236,6 +236,7 @@ START=$(date +"%s")
 	       #READELF=llvm-readelf \
 	       #OBJSIZE=llvm-size \
 	       V=$VERBOSE 2>&1 | tee error.log
+	       
 	elif [ -d ${KERNEL_DIR}/cosmic ];
 	   then
 	       make -j$(nproc --all) O=out \
@@ -252,6 +253,7 @@ START=$(date +"%s")
            #OBJDUMP=llvm-objdump \
            #STRIP=llvm-strip \
 	       V=$VERBOSE 2>&1 | tee error.log
+	       
 	elif [ -d ${KERNEL_DIR}/cosmic-clang ];
 	   then
 	       make -kj$(nproc --all) O=out \
