@@ -20,8 +20,8 @@ DEVICE=vayu
 DEFCONFIG=${DEVICE}_defconfig
 
 # Select LTO variant ( Full LTO by default )
-DISABLE_LTO=1
-THIN_LTO=0
+DISABLE_LTO=0
+THIN_LTO=1
 
 # Files
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz
@@ -126,7 +126,7 @@ function cloneTC() {
 	fi
 	
     # Clone AnyKernel
-    git clone --depth=1 https://github.com/missgoin/AnyKernel3.git
+    git clone --depth=1 https://github.com/missgoin/AnyKernel3.git -b Vayu/Bhima
 
 	}
 
@@ -228,11 +228,11 @@ START=$(date +"%s")
 	       LD=${LINKER} \
 	       #LLVM=1 \
 	       #LLVM_IAS=1 \
-	       #AR=llvm-ar \
-	       #NM=llvm-nm \
-	       #OBJCOPY=llvm-objcopy \
-	       #OBJDUMP=llvm-objdump \
-	       #STRIP=llvm-strip \
+	       AR=llvm-ar \
+	       NM=llvm-nm \
+	       OBJCOPY=llvm-objcopy \
+	       OBJDUMP=llvm-objdump \
+	       STRIP=llvm-strip \
 	       #READELF=llvm-readelf \
 	       #OBJSIZE=llvm-size \
 	       V=$VERBOSE 2>&1 | tee error.log
