@@ -126,7 +126,7 @@ function cloneTC() {
 	fi
 	
     # Clone AnyKernel
-    git clone --depth=1 https://github.com/missgoin/AnyKernel3.git -b Vayu/Bhima
+    git clone --depth=1 https://github.com/missgoin/AnyKernel3.git -b main
 
 	}
 
