@@ -42,8 +42,8 @@ TANGGAL=$(date +"%F%S")
 
 # Specify Final Zip Name
 ZIPNAME=SUPER.KERNEL
-FINAL_ZIP=${ZIPNAME}-${DEVICE}-${TANGGAL}.zip
-FINAL_ZIP_ALIAS=Karenulvay-${TANGGAL}.zip
+FINAL_ZIP=${ZIPNAME}-${DEVICE}-${DATE}.zip
+FINAL_ZIP_ALIAS=Karenulvay-${DATE}.zip
 
 ##----------------------------------------------------------##
 # Specify compiler.
@@ -333,12 +333,12 @@ function zipping() {
 	
 	# Zipping and Push Kernel
 	cd AnyKernel3 || exit 1
-        zip -r9 ${FINAL_ZIP_ALIAS} *
-        MD5CHECK=$(md5sum "$FINAL_ZIP_ALIAS" | cut -d' ' -f1)
-        echo "Zip: $FINAL_ZIP_ALIAS"
+        zip -r9 ${FINAL_ZIP} *
+        MD5CHECK=$(md5sum "$FINAL_ZIP" | cut -d' ' -f1)
+        echo "Zip: $FINAL_ZIP"
         #curl -T $FINAL_ZIP_ALIAS temp.sh; echo
         #curl -T $FINAL_ZIP_ALIAS https://oshi.at; echo
-        curl --upload-file $FINAL_ZIP_ALIAS https://free.keep.sh; echo
+        curl --upload-file $FINAL_ZIP https://free.keep.sh; echo
     cd ..
 }
 
