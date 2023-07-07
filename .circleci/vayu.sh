@@ -32,23 +32,23 @@ IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz
 VERBOSE=0
 
 # Kernel Version
-KERVER=$(make kernelversion)
+#KERVER=$(make kernelversion)
 
-COMMIT_HEAD=$(git log --oneline -1)
+#COMMIT_HEAD=$(git log --oneline -1)
 
 # Date and Time
 DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
 TANGGAL=$(date +"%F%S")
 
 # Specify Final Zip Name
-ZIPNAME=SUPER.KERNEL
+ZIPNAME="SUPER.KERNEL-VAYU-$(TZ=Asia/Jakarta date +"%Y%m%d-%H%M").zip"
 FINAL_ZIP=${ZIPNAME}-${DEVICE}-${DATE}.zip
 FINAL_ZIP_ALIAS=Karenulvay-${DATE}.zip
 
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=azure
+COMPILER=lilium
 
 ##----------------------------------------------------------##
 # Specify Linker
@@ -68,6 +68,11 @@ function cloneTC() {
     elif [ $COMPILER = "trb" ];
     then
     git clone --depth=1 https://gitlab.com/varunhardgamer/trb_clang.git clang
+    PATH="${KERNEL_DIR}/clang/bin:$PATH"
+    
+    elif [ $COMPILER = "lilium" ];
+    then
+    git clone --depth=1 https://gitlab.com/liliumproject/liliumclang.git -b latest clang
     PATH="${KERNEL_DIR}/clang/bin:$PATH"
     
     elif [ $COMPILER = "gf" ];
@@ -126,7 +131,7 @@ function cloneTC() {
 	fi
 	
     # Clone AnyKernel
-    git clone --depth=1 https://github.com/missgoin/AnyKernel3.git -b main
+    #git clone --depth=1 https://github.com/missgoin/AnyKernel3.git -b main
 
 	}
 
@@ -226,13 +231,13 @@ START=$(date +"%s")
 	       CROSS_COMPILE=aarch64-linux-gnu- \
 	       CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
 	       LD=${LINKER} \
-	       #LLVM=1 \
-	       #LLVM_IAS=1 \
-	       AR=llvm-ar \
-	       NM=llvm-nm \
-	       OBJCOPY=llvm-objcopy \
-	       OBJDUMP=llvm-objdump \
-	       STRIP=llvm-strip \
+	       LLVM=1 \
+	       LLVM_IAS=1 \
+	       #AR=llvm-ar \
+	       #NM=llvm-nm \
+	       #OBJCOPY=llvm-objcopy \
+	       #OBJDUMP=llvm-objdump \
+	       #STRIP=llvm-strip \
 	       #READELF=llvm-readelf \
 	       #OBJSIZE=llvm-size \
 	       V=$VERBOSE 2>&1 | tee error.log
@@ -322,6 +327,11 @@ START=$(date +"%s")
 	       OBJSIZE=llvm-size \
 	       V=$VERBOSE 2>&1 | tee error.log
 	fi
+	
+	echo "**** Verify Image.gz-dtb & dtbo.img ****"
+    ls $(pwd)/out/arch/arm64/boot/Image.gz
+    #ls $(pwd)/out/arch/arm64/boot/dtbo.img
+    
 }
 
 ##----------------------------------------------------------------##
@@ -333,12 +343,12 @@ function zipping() {
 	
 	# Zipping and Push Kernel
 	cd AnyKernel3 || exit 1
-        zip -r9 ${FINAL_ZIP} *
-        MD5CHECK=$(md5sum "$FINAL_ZIP" | cut -d' ' -f1)
-        echo "Zip: $FINAL_ZIP"
+        zip -r9 ${ZIPNAME} *
+        MD5CHECK=$(md5sum "$ZIPNAME" | cut -d' ' -f1)
+        echo "Zip: $ZIPNAME"
         #curl -T $FINAL_ZIP_ALIAS temp.sh; echo
         #curl -T $FINAL_ZIP_ALIAS https://oshi.at; echo
-        curl --upload-file $FINAL_ZIP https://free.keep.sh; echo
+        curl --upload-file $ZIPNAME https://free.keep.sh
     cd ..
 }
 
